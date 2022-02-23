@@ -1,0 +1,3 @@
+architect-functions
+requests
+python-json-logger

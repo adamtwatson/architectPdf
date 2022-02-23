@@ -1,0 +1,5 @@
+architect-functions
+boto3
+jinja2
+weasyprint
+python-json-logger
