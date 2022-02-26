@@ -1,32 +1,14 @@
 import base64
 import codecs
 
-import os
-from io import BytesIO
+from requests.exceptions import InvalidURL
 
-from weasyprint import HTML
-from jinja2 import Environment, FileSystemLoader
+from pdf_generator import PDFRenderer
 
-from shared import settings
-
-from shared.translations import i18n
-
-logger = settings.logger
-
-
-def environment():
-    """
-    Set up the jinja2 with File Loader.
-    """
-    base_dir = os.path.abspath(os.path.dirname(__file__))
-    template_dir = os.path.join(base_dir, 'templates')
-
-    j2_env = Environment(
-        loader=FileSystemLoader(template_dir),
-        trim_blocks=True,
-    )
-
-    return j2_env
+# Arc Shared Code
+from shared.settings import logger
+from shared import db_repo
+from shared.translations.i18n import i18n, get_translations
 
 
 def iterfile(target_file):
@@ -36,52 +18,33 @@ def iterfile(target_file):
     yield from target_file
 
 
+@i18n  # This will harvest the translation data and add it to the event
 def handler(event, context):
     """
     An endpoint that will create a translatable PDF file
     """
-    logger.debug(event)
-    logger.debug(context)
-    # Get the locale from the headers
-    locale = event['queryStringParameters'].get('locale', None)
-    translations = i18n.get_translations()
-    # Make sure the requested local actually exists in language keys, otherwise default to english
-    if locale not in translations.keys():
-        logger.debug(f'Requested locale: {locale}, not available, defaulting to en')
-        locale = 'en'
+    # Make sure this is a valid request
+    if not event['queryStringParameters']:
+        logger.debug('Invalid request')
+        raise InvalidURL('No Query String Found.')
+    query_string_dict = event['queryStringParameters']
 
-    # Update context with translations data
-    context.update(translations[locale])
-    # Assert the system generated translations
-    assert context is not None
-    # TODO MAKE SURE NO KEYS IN CONTEXT MATCH THE TRANSLATIONS IN THE LANGUAGE JSON FILES
-    data_dict = {
-        'data_point_1': 'Testing 123',
-        'data_point_2': 'Testing 456',
-        'data_point_3': 'Testing 789',
-        # 'title': "We don't want to overwrite this key because it is a translation"
-    }
+    # Get for the users data
+    requested_user = query_string_dict.get('user', None)
+    # Get the cat to see if the user owns
+    validate_cat = query_string_dict.get('cat', None)
+    assert requested_user is not None
+    assert validate_cat is not None
 
-    # Assert we are not trying to update a translation
-    key_collision = set(data_dict.keys()).intersection(context.keys())
-    assert len(key_collision) == 0
+    # Get the data for the request
+    render_dict = db_repo.check_user_cat(user_id=requested_user, cat_id=validate_cat)
 
-    context.update(data_dict)
-    logger.debug(f'context: {context}')
+    # render the PDF file
+    target_file = PDFRenderer(translations=event['translations'], data=render_dict).render()
 
-    # Grab the template
-    template = environment().get_template('pdf_template.html')
-    # Pass the context data to the template, this includes translation context keys
-    html = template.render(context)
-    # Create a bytes io object to store the pdf we are creating
-    target_file = BytesIO()
-    # Create the PDF, using the ByteIO object as the target file
-    HTML(string=html).write_pdf(target=target_file)
-    # Set the BytesIO file buffer's current position to 0, this lets the file be iterated from the start
-    target_file.seek(0)
     return {
-      "isBase64Encoded": True,
-      "statusCode": 200,
-      "headers": {"content-type": "application/pdf"},
-      "body": base64.b64encode(target_file.read()).decode("utf-8")
+        "isBase64Encoded": True,
+        "statusCode": 200,
+        "headers": {"content-type": "application/pdf"},
+        "body": base64.b64encode(target_file.read()).decode("utf-8")
     }

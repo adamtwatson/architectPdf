@@ -2,9 +2,11 @@ version: '2'
 services:
   api:
     build: .
-    command: npx arc sandbox
+    entrypoint: sh ./docker-entrypoint.sh
     restart: unless-stopped
     volumes:
       - .:/opt/app
     ports:
       - "3333:3333"
+    environment:
+      PUBLIC_URL: './'

@@ -1,5 +1,5 @@
 @app
-architectPdf
+arc-pdf
 
 @http
 get /generate-pdf
