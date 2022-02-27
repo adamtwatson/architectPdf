@@ -8,7 +8,7 @@ from pdf_generator import PDFRenderer
 # Arc Shared Code
 from shared.settings import logger
 from shared import db_repo
-from shared.translations.i18n import i18n, get_translations
+from shared.translations.i18n import i18n
 
 
 def iterfile(target_file):

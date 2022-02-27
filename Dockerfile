@@ -1,4 +1,4 @@
-FROM node
+FROM node:latest
 
 # set the default dir to /opt/app
 WORKDIR /opt/app
@@ -6,9 +6,6 @@ WORKDIR /opt/app
 COPY requirements.txt ./
 COPY package*.json ./
 
-RUN apt update && apt install python3.9\
-    pip -y\
-    && npm install\
-    && pip install -r requirements.txt
+RUN apt update && apt install pip -y && pip install -r requirements.txt
 
 COPY . .

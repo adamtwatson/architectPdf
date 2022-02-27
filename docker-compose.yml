@@ -2,11 +2,22 @@ version: '2'
 services:
   api:
     build: .
-    entrypoint: sh ./docker-entrypoint.sh
+    command: sh -c "npm init @architect && npx arc sandbox"
     restart: unless-stopped
     volumes:
       - .:/opt/app
     ports:
       - "3333:3333"
+
+  ui:
+    image: node:latest
+    user: "node"
+    working_dir: /opt/app
+    command: sh -c "npm install && npm start"
+    volumes:
+      - ./ui:/opt/app
     environment:
       PUBLIC_URL: './'
+      NODE_ENV: 'local'
+    ports:
+      - '3000:3000'

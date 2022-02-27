@@ -5,8 +5,7 @@ from weasyprint import HTML
 from jinja2 import Environment, FileSystemLoader
 
 # Arc Shared Code
-from shared.settings import logger
-from shared.translations.i18n import i18n, get_translations
+from shared.translations.i18n import get_translations
 
 
 # Set up the jinja2 with File Loader.
