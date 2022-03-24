@@ -1,6 +1,9 @@
 @app
 arc-pdf
 
+@shared
+src src/shared
+
 @http
 get /generate-pdf
 get /check-python-licenses
@@ -13,6 +16,23 @@ ignore
   .tar.gz
   tmp
   user
+
+@tables
+user
+  userID *String
+
+cats
+  userID *String
+  catID **String
+  encrypt true
+  PointInTimeRecovery true
+
+fleeting-thoughts
+  pplID *String
+  expires TTL
+
+
+
 @aws
 profile default
 region us-east-1

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="2" failures="0" skipped="0" tests="2" time="4.124" timestamp="2022-03-15T05:30:16.229354" hostname="442e2f327013"><testcase classname="" name="src.tests.test_i18n" time="0.000"><error message="collection failure">ImportError while importing test module '/opt/app/src/tests/test_i18n.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.9/importlib/__init__.py:127: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+/opt/app/tests/test_i18n.py:5: in &lt;module&gt;
+    ???
+E   ModuleNotFoundError: No module named 'shared'</error></testcase><testcase classname="" name="src.tests.test_jwt_auth" time="0.000"><error message="collection failure">ImportError while importing test module '/opt/app/src/tests/test_jwt_auth.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.9/importlib/__init__.py:127: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+src/tests/test_jwt_auth.py:5: in &lt;module&gt;
+    from vendor.shared import jwt_auth
+E   ModuleNotFoundError: No module named 'vendor'</error></testcase></testsuite></testsuites>

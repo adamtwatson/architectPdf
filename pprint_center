@@ -1,0 +1,39 @@
+#!/bin/sh
+# -*- coding: utf-8 -*-
+# ./pprint_center message optional fill_char optional length
+# ./pprint_center "Center this message" ^
+usage="$(basename "$0") [-h] [-$1] -- program to take a message and center it in the terminal
+
+where:
+    -h  show this help text
+    -s  set the seed value (default: 42)"
+
+seed=42
+while getopts ':hs:' option; do
+  case "$option" in
+    h) echo "$usage"
+       exit
+       ;;
+    s) seed=$OPTARG
+       ;;
+    :) printf "missing argument for -%s\n" "$OPTARG" >&2
+       echo "$usage" >&2
+       exit 1
+       ;;
+   \?) printf "illegal option: -%s\n" "$OPTARG" >&2
+       echo "$usage" >&2
+       exit 1
+       ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+message=$1
+fill_char=${2:-=}
+terminal_width=${3:-$(tput cols)}
+
+pprint_center() {
+  python3 -c "print(' $1 '.center($3, '$2'))"
+}
+pprint_center "$message" "$fill_char" "$terminal_width"
+#pprint_center message fill_char terminal_width

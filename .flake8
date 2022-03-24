@@ -1,0 +1,8 @@
+[flake8]
+ignore = D203
+exclude = .git,__pycache__,docs/source/conf.py,old,build,dist,.pytest_cache,nodemodules,vendor,/usr
+max-complexity = 10
+show-source = True
+max-line-length = 127
+statistics = True
+tee = True

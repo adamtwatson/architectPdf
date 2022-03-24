@@ -1,19 +1,15 @@
-import os
 from io import BytesIO
 
 from weasyprint import HTML
 from jinja2 import Environment, FileSystemLoader
 
 # Arc Shared Code
-from shared.translations.i18n import get_translations
+from shared.translations.i18n import get_translation_for_locale
 
 
 # Set up the jinja2 with File Loader.
-base_dir = os.path.abspath(os.path.dirname(__file__))
-template_dir = os.path.join(base_dir, 'templates')
-
 jinja2_env = Environment(
-    loader=FileSystemLoader(template_dir),
+    loader=FileSystemLoader('./templates'),
     trim_blocks=True,
 )
 
@@ -24,7 +20,7 @@ class PDFRenderer:
         self.template = jinja2_env.get_template(template)
         # Get the translations if there aren't any
         if translations is None:
-            translations = get_translations('en')
+            translations = get_translation_for_locale('en')
         # Set the data set, add the translations to the data set
         self.data = data | translations
         # Create a bytes io object to store the pdf we are creating

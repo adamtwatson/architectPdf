@@ -27,17 +27,17 @@ def handler(event, context):
     if not event['queryStringParameters']:
         logger.debug('Invalid request')
         raise InvalidURL('No Query String Found.')
-    query_string_dict = event['queryStringParameters']
+    # query_string_dict = event['queryStringParameters']
 
-    # Get for the users data
-    requested_user = query_string_dict.get('user', None)
-    # Get the cat to see if the user owns
-    validate_cat = query_string_dict.get('cat', None)
-    assert requested_user is not None
-    assert validate_cat is not None
+    # # Get for the users data
+    # requested_user = query_string_dict.get('user', None)
+    # # Get the cat to see if the user owns
+    # validate_cat = query_string_dict.get('cat', None)
+    # assert requested_user is not None
+    # assert validate_cat is not None
 
     # Get the data for the request
-    render_dict = db_repo.check_user_cat(user_id=requested_user, cat_id=validate_cat)
+    render_dict = db_repo.check_user_cat()
 
     # render the PDF file
     target_file = PDFRenderer(translations=event['translations'], data=render_dict).render()
