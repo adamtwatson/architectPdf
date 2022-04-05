@@ -10,7 +10,7 @@ Ensure docker is installed: [Docker](https://www.docker.com/get-started)
 ### When the server comes online visit the following urls: 
 * http://localhost:3333/generate-pdf?locale=en
 * http://localhost:3333/generate-pdf?locale=de
-* http://localhost:3333/check-pyhon-licenses
+* http://localhost:3333/check-python-licenses
 * http://localhost:3000/ <--- This is the Development UI
   * Note: running UI build enables latest UI at http://localhost:3333/
     * Build **MUST** happen prior to deployment
